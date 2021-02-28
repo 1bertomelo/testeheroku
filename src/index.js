@@ -56,7 +56,7 @@ app.delete('/:id', (request, response) => {
     return response.json({ "Message": `Student ${id} removed` });
 });
 
-module.exports = app.listen(3333, () => {
+module.exports = app.listen(process.event.PORT || 3333, () => {
     console.log("Server running");
 });
 

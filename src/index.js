@@ -2,12 +2,12 @@
 const { request } = require('express');
 const express = require('express');
 const { uuid, isUuid } = require('uuidv4');
+const cors = require('cors');
 
 //preparar para usar o express;
 const app = express();
 app.use(express.json());
-
-
+app.use(cors());
 const repositories = [];
 
 //1 paramatro o nome da rota 
@@ -56,7 +56,7 @@ app.delete('/:id', (request, response) => {
     return response.json({ "Message": `Student ${id} removed` });
 });
 
-module.exports = app.listen(process.event.PORT || 3333, () => {
+module.exports = app.listen(process.env.PORT || 3333, () => {
     console.log("Server running");
 });
 

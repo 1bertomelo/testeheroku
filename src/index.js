@@ -55,6 +55,9 @@ app.delete('/:id', (request, response) => {
     repositories.splice(studentResearch, 1);
     return response.json({ "Message": `Student ${id} removed` });
 });
+
+//teste heroku publicação
+
 //PORT variavel usada heroku
 module.exports = app.listen(process.env.PORT || 3333, () => {
     console.log("Server running");

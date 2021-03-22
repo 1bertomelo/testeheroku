@@ -3,6 +3,9 @@ const { request } = require('express');
 const express = require('express');
 const { uuid, isUuid } = require('uuidv4');
 const cors = require('cors');
+const mongoose = require('mongoose');
+const AlunoRepositorio = require('./models/Aluno');
+
 
 //preparar para usar o express;
 const app = express();
@@ -10,23 +13,37 @@ app.use(express.json());
 app.use(cors());
 const repositories = [];
 
+require('dotenv').config({
+    path: process.env.NODE_ENV === "test" ?
+        "./src/config/.env.testing"
+        : "./src/config/.env"
+});
+
+mongoose.connect(process.env.DB_CONNECTION, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
+
+
 //1 paramatro o nome da rota 
 //2 parametro ação que vou fazer funcao
 //java script arrow function
 // (parametros) => {  codigos programa fazer }
 
 
-app.get('/', (request, response) => {
-    return response.json(repositories);
+app.get('/', async (request, response) => {
+    const retornoAluno = await AlunoRepositorio.find();
+    return response.json(retornoAluno);
 });
 
 
-app.post('/', (request, response) => {
-    const { name, email, peso, altura } = request.body;
+app.post('/', async (request, response) => {
+    const { nome, email, cpf } = request.body;
     //destruturação 
-    const newStudent = { id: uuid(), name, email };
-    repositories.push(newStudent);
-    return response.json({ newStudent });
+    const retornoAluno = await AlunoRepositorio.create({
+        id: uuid(), nome, cpf, email
+    });
+    return response.json({ retornoAluno });
 });
 
 app.put('/:id', (request, response) => {

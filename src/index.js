@@ -11,7 +11,6 @@ const AlunoRepositorio = require('./models/Aluno');
 const app = express();
 app.use(express.json());
 app.use(cors());
-const repositories = [];
 
 require('dotenv').config({
     path: process.env.NODE_ENV === "test" ?
@@ -19,6 +18,7 @@ require('dotenv').config({
         : "./src/config/.env"
 });
 
+console.log(process.env.DB_CONNECTION);
 mongoose.connect(process.env.DB_CONNECTION, {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -41,35 +41,43 @@ app.post('/', async (request, response) => {
     const { nome, email, cpf } = request.body;
     //destruturação 
     const retornoAluno = await AlunoRepositorio.create({
-        id: uuid(), nome, cpf, email
+        nome, cpf, email
     });
     return response.json({ retornoAluno });
 });
 
-app.put('/:id', (request, response) => {
+app.put('/:id', async (request, response) => {
     //route params guid
     const { id } = request.params;
-    const { name, email } = request.body;
-    //id enviado existe no array?
-    const studentResearch = repositories.findIndex(studentIndex => studentIndex.id == id);
-    if (studentResearch < 0) {
+    const { nome, email, cpf } = request.body;
+
+    const alunoRetorno = await AlunoRepositorio.find({ cpf: id });
+    if (alunoRetorno.length == 0) {
         return response.status(404).json({ "error": "Student not found" });
     }
-    const newStudent = { id, name, email };
-    repositories[studentResearch] = newStudent;
-    return response.json(newStudent);
-
+    const alunoAtualizado = await AlunoRepositorio.updateOne({ cpf: id },
+        {
+            $set:
+            {
+                email, nome
+            }
+        }
+    );
+    return response.json(alunoAtualizado);
 });
 
-app.delete('/:id', (request, response) => {
+app.delete('/:id', async (request, response) => {
     const { id } = request.params;
     //id enviado existe no array?
-    const studentResearch = repositories.findIndex(studentIndex => studentIndex.id == id);
-    if (studentResearch < 0) {
-        return response.status(404).json({ "error": `Student ${id} not found` });
-        //template string
+
+
+    const alunoRetorno = await AlunoRepositorio.find({ cpf: id });
+    console.log(alunoRetorno);
+    if (alunoRetorno.length === 0) {
+        return response.status(404).json({ "error": "Student not found" });
     }
-    repositories.splice(studentResearch, 1);
+    const alunoRemovido = await AlunoRepositorio.deleteOne({ cpf: id });
+
     return response.json({ "Message": `Student ${id} removed` });
 });
 

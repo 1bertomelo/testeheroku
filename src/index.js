@@ -1,16 +1,15 @@
 //importando o pacote express
-const { request } = require('express');
 const express = require('express');
-const { uuid, isUuid } = require('uuidv4');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const AlunoRepositorio = require('./models/Aluno');
+const routes = require('./routes/alunoRota');
 
-
-//preparar para usar o express;
 const app = express();
+
 app.use(express.json());
 app.use(cors());
+app.use(routes);
+
 
 require('dotenv').config({
     path: process.env.NODE_ENV === "test" ?
@@ -31,55 +30,6 @@ mongoose.connect(process.env.DB_CONNECTION, {
 // (parametros) => {  codigos programa fazer }
 
 
-app.get('/', async (request, response) => {
-    const retornoAluno = await AlunoRepositorio.find();
-    return response.json(retornoAluno);
-});
-
-
-app.post('/', async (request, response) => {
-    const { nome, email, cpf } = request.body;
-    //destruturação 
-    const retornoAluno = await AlunoRepositorio.create({
-        nome, cpf, email
-    });
-    return response.json({ retornoAluno });
-});
-
-app.put('/:id', async (request, response) => {
-    //route params guid
-    const { id } = request.params;
-    const { nome, email, cpf } = request.body;
-
-    const alunoRetorno = await AlunoRepositorio.find({ cpf: id });
-    if (alunoRetorno.length == 0) {
-        return response.status(404).json({ "error": "Student not found" });
-    }
-    const alunoAtualizado = await AlunoRepositorio.updateOne({ cpf: id },
-        {
-            $set:
-            {
-                email, nome
-            }
-        }
-    );
-    return response.json(alunoAtualizado);
-});
-
-app.delete('/:id', async (request, response) => {
-    const { id } = request.params;
-    //id enviado existe no array?
-
-
-    const alunoRetorno = await AlunoRepositorio.find({ cpf: id });
-    console.log(alunoRetorno);
-    if (alunoRetorno.length === 0) {
-        return response.status(404).json({ "error": "Student not found" });
-    }
-    const alunoRemovido = await AlunoRepositorio.deleteOne({ cpf: id });
-
-    return response.json({ "Message": `Student ${id} removed` });
-});
 
 //teste heroku publicação
 

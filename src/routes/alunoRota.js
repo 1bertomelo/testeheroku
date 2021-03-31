@@ -1,55 +1,50 @@
 const { Router } = require('express');
 const alunoService = require('../service/AlunoService');
-
 const routes = Router();
 
-//preparar para usar o express;
+routes.get('/aluno', async (request, response) => {
+    const retornoAluno = await alunoService.buscaAluno();
+    console.log('oi h3');
 
-routes.get('/', async (request, response) => {
+    return response.json(retornoAluno);
+});
+
+routes.get('/aluno/:cpf', async (request, response) => {
     const retornoAluno = await alunoService.buscaAluno();
     return response.json(retornoAluno);
 });
 
-
-routes.post('/', async (request, response) => {
+routes.post('/aluno', async (request, response) => {
     const { nome, email, cpf } = request.body;
     //destruturação 
     const novoAluno = { nome, email, cpf };
     const retornoAluno = await alunoService.insereAluno(novoAluno);
-    return response.json({ retornoAluno });
-});
-
-routes.put('/:id', async (request, response) => {
-    //route params guid
-    const { id } = request.params;
-    const { nome, email, cpf } = request.body;
-
-    const alunoRetorno = await AlunoRepositorio.find({ cpf: id });
-    if (alunoRetorno.length == 0) {
-        return response.status(404).json({ "error": "Student not found" });
+    if (retornoAluno === null) {
+        response.status(500).json({ "error": "CPF Student exists. Student do not be inserted" });
     }
-    const alunoAtualizado = await AlunoRepositorio.updateOne({ cpf: id },
-        {
-            $set:
-            {
-                email, nome
-            }
-        }
-    );
-    return response.json(alunoAtualizado);
+    return response.status(201).json({ retornoAluno });
 });
 
-routes.delete('/:id', async (request, response) => {
-    const { id } = request.params;
+routes.put('/aluno/:cpf', async (request, response) => {
+    //route params guid
+    const { cpf } = request.params;
+    const { nome, email } = request.body;
+    const alunoAtualizar = { cpf, nome, email };
+
+    const retornoAluno = await alunoService.atualizaAluno(alunoAtualizar);
+    if (!retornoAluno)
+        response.status(404).json({ "error": "Student not found" });
+
+    return response.status(200).json({ "ok": "Student updated" });
+});
+
+routes.delete('/aluno/:cpf', async (request, response) => {
+    const { cpf } = request.params;
     //id enviado existe no array?
 
-
-    const alunoRetorno = await AlunoRepositorio.find({ cpf: id });
-    console.log(alunoRetorno);
-    if (alunoRetorno.length === 0) {
+    const retornoAluno = await alunoService.removeAluno(cpf);
+    if (!retornoAluno)
         return response.status(404).json({ "error": "Student not found" });
-    }
-    const alunoRemovido = await AlunoRepositorio.deleteOne({ cpf: id });
 
     return response.json({ "Message": `Student ${id} removed` });
 });

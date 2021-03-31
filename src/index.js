@@ -23,16 +23,6 @@ mongoose.connect(process.env.DB_CONNECTION, {
     useUnifiedTopology: true
 });
 
-
-//1 paramatro o nome da rota 
-//2 parametro ação que vou fazer funcao
-//java script arrow function
-// (parametros) => {  codigos programa fazer }
-
-
-
-//teste heroku publicação
-
 //PORT variavel usada heroku
 module.exports = app.listen(process.env.PORT || 3333, () => {
     console.log("Server running");

@@ -1,8 +1,8 @@
 //const database = require('../infra/database');
 const AlunoRepositorio = require('../models/Aluno');
 
+
 module.exports.buscaAluno = async function () {
-    console.log('oi h2');
     return await AlunoRepositorio.find();
 }
 
@@ -15,6 +15,8 @@ module.exports.insereAluno = async function (novoAluno) {
     const retornoAluno = await AlunoRepositorio.create({
         nome, cpf, email
     });
+    console.log('inserido..');
+    console.log(retornoAluno);
     return retornoAluno;
 }
 

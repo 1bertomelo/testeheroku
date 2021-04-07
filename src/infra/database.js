@@ -1,17 +1,21 @@
-const mongoose = require('mongoose');
+require('dotenv').config({ path: './src/config/.env' });
+const mongoose = require("mongoose");
 
-
-
-module.exports.conecta = function () {
-    require('dotenv').config({
-        path: process.env.NODE_ENV === "test" ?
-            "./src/config/.env.testing"
-            : "./src/config/.env"
-    });
-
+const connectDB = async () => {
     console.log(process.env.DB_CONNECTION);
-    mongoose.connect(process.env.DB_CONNECTION, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    });
-}
+    try {
+        await mongoose.connect(process.env.DB_CONNECTION, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            useCreateIndex: true,
+            useFindAndModify: false,
+        });
+
+        console.log("MongoDB connection SUCCESS");
+    } catch (error) {
+        console.error("MongoDB connection FAIL");
+        process.exit(1);
+    }
+};
+
+module.exports = connectDB;

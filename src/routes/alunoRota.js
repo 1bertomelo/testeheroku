@@ -4,7 +4,7 @@ const autenticacaoJWT = require('../service/authService');
 
 const routes = Router();
 //autenticacaoJWT.verificarToken
-routes.get('/', async (request, response) => {
+routes.get('/', autenticacaoJWT.verificarToken, async (request, response) => {
     const retornoAluno = await alunoService.buscaAluno();
     return response.json(retornoAluno);
 });
@@ -16,9 +16,9 @@ routes.get('/:cpf', autenticacaoJWT.verificarToken, async (request, response) =>
 });
 
 routes.post('/', async (request, response) => {
-    const { nome, email, cpf } = request.body;
+    const { nome, email, cpf, senha } = request.body;
     //destruturação 
-    const novoAluno = { nome, email, cpf };
+    const novoAluno = { nome, email, cpf, senha };
     const retornoAluno = await alunoService.insereAluno(novoAluno);
     if (retornoAluno === null) {
         response.status(500).json({ "error": "CPF Student exists. Student do not be inserted" });
@@ -26,7 +26,7 @@ routes.post('/', async (request, response) => {
     return response.status(201).json({ retornoAluno });
 });
 
-routes.put('/:cpf', async (request, response) => {
+routes.put('/:cpf', autenticacaoJWT.verificarToken, async (request, response) => {
     //route params guid
     const { cpf } = request.params;
     const { nome, email } = request.body;
@@ -39,7 +39,7 @@ routes.put('/:cpf', async (request, response) => {
     return response.status(200).json({ "ok": "Student updated" });
 });
 
-routes.delete('/:cpf', async (request, response) => {
+routes.delete('/:cpf', autenticacaoJWT.verificarToken, async (request, response) => {
     const { cpf } = request.params;
 
     const retornoAluno = await alunoService.removeAluno(cpf);

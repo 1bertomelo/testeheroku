@@ -39,3 +39,11 @@ module.exports.removeAluno = function (cpf) {
     const resultadoAluno = AlunoRepositorio.removeAluno(cpf);
     return true;
 }
+
+module.exports.verificaEmailSenha = function (email, senha) {
+    return AlunoRepositorio.verificaEmailSenha(email, senha);
+}
+
+module.exports.buscaAlunoPorEmail = function (email) {
+    return AlunoRepositorio.buscaAlunoPorEmail(email);
+}

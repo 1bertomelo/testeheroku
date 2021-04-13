@@ -7,13 +7,17 @@ module.exports.buscaAluno = async function () {
 }
 
 module.exports.buscaAlunoPorCpf = async function (cpf) {
-    return await AlunoRepositorio.find({ cpf });
+    return await AlunoRepositorio.findOne({ cpf });
+}
+
+module.exports.buscaAlunoPorEmail = async function (email) {
+    return await AlunoRepositorio.findOne({ email });
 }
 
 module.exports.insereAluno = async function (novoAluno) {
-    const { nome, cpf, email } = novoAluno;
+    const { nome, cpf, email, senha } = novoAluno;
     const retornoAluno = await AlunoRepositorio.create({
-        nome, cpf, email
+        nome, cpf, email, senha
     });
     console.log('inserido..');
     console.log(retornoAluno);
@@ -36,4 +40,8 @@ module.exports.atualizaAluno = async function (atualizaAluno) {
 
 module.exports.removeAluno = async function (cpf) {
     return await AlunoRepositorio.deleteOne({ cpf });
+}
+
+module.exports.verificaEmailSenha = async function (email, senha) {
+    return await AlunoRepositorio.findOne({ email, senha });
 }

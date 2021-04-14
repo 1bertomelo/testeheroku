@@ -1,6 +1,8 @@
 const { Router } = require('express');
 const alunoService = require('../service/AlunoService');
 const autenticacaoJWT = require('../service/authService');
+const { validate } = require('../validations/validations');
+const { AlunoValidationRules } = require('../validations/AlunoValidations');
 
 const routes = Router();
 //autenticacaoJWT.verificarToken
@@ -15,7 +17,7 @@ routes.get('/:cpf', autenticacaoJWT.verificarToken, async (request, response) =>
     return response.json(retornoAluno);
 });
 
-routes.post('/', async (request, response) => {
+routes.post('/', AlunoValidationRules(), validate, async (request, response) => {
     const { nome, email, cpf, senha } = request.body;
     //destruturação 
     const novoAluno = { nome, email, cpf, senha };

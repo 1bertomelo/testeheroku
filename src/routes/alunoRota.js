@@ -20,6 +20,11 @@ routes.get('/:cpf', autenticacaoJWT.verificarToken, async (request, response) =>
 routes.post('/', AlunoValidationRules(), validate, async (request, response) => {
     const { nome, email, cpf, senha } = request.body;
     //destruturação 
+
+    if (nome === null || nome === "") {
+        response.status(500).json({ "error": "name field is required!!" });
+    }
+
     const novoAluno = { nome, email, cpf, senha };
     const retornoAluno = await alunoService.insereAluno(novoAluno);
     if (retornoAluno === null) {

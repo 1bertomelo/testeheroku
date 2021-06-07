@@ -2,9 +2,9 @@ const request = require('supertest');
 const express = require('express');
 //const app = require('../index');
 
-const routes = require('../routes/alunoRota');
-const Authroutes = require('../routes/authRota');
-const connectDB = require('../infra/database');
+//const routes = require('../routes/alunoRota');
+//const Authroutes = require('../routes/authRota');
+//const connectDB = require('../infra/database');
 
 /*
 const bd = () => new Promise((resolve, reject) => {

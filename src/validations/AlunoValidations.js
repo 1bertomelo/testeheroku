@@ -22,7 +22,7 @@ const AlunoValidationRules = () => {
         body('cpf').notEmpty().withMessage('CPF obrigatório'),
         body('cpf').custom((value) => {
             if (!validarCPF(value))
-                throw new Error('CPF é inválido!');
+                return false;
             return true;
         }).withMessage('Cpf inválido'),
         body('cpf').custom(async (value) => {

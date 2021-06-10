@@ -13,7 +13,7 @@ const AlunoValidationRules = () => {
             const resultadoAluno = await AlunoService.buscaAlunoPorEmail(value);
             console.log(resultadoAluno);
             if (resultadoAluno != null) {
-                throw new Error('Email já existe, cadastro não permitido!');
+                return Promise.reject('Email já existe, cadastro não permitido!');
             }
             return true;
 
@@ -22,14 +22,15 @@ const AlunoValidationRules = () => {
         body('cpf').notEmpty().withMessage('CPF obrigatório'),
         body('cpf').custom((value) => {
             if (!validarCPF(value))
-                return false;
+                return Promise.reject('CPF inválido!');
             return true;
         }).withMessage('Cpf inválido'),
         body('cpf').custom(async (value) => {
             const resultadoAluno = await AlunoService.buscaAlunoPorCpf(value);
             console.log(resultadoAluno);
             if (resultadoAluno != null) {
-                throw new Error('CPF já existe, cadastro não permitido!');
+                //throw new Error('CPF já existe, cadastro não permitido!');
+                return Promise.reject('Já existe CPF cadastrado');
             }
             return true;
         }),

@@ -18,19 +18,31 @@ routes.get('/:cpf', autenticacaoJWT.verificarToken, async (request, response) =>
 });
 
 routes.post('/', AlunoValidationRules(), validate, async (request, response) => {
-    const { nome, email, cpf, senha } = request.body;
-    //destruturação 
 
-    if (nome === null || nome === "") {
-        response.status(500).json({ "error": "name field is required!!" });
-    }
+    try {
 
-    const novoAluno = { nome, email, cpf, senha };
-    const retornoAluno = await alunoService.insereAluno(novoAluno);
-    if (retornoAluno === null) {
-        response.status(500).json({ "error": "CPF Student exists. Student do not be inserted" });
+        const { nome, email, cpf, senha } = request.body;
+        console.log('oi');
+        console.log(request.body);
+        //destruturação 
+        
+        if (nome === null || nome === "") {
+            response.status(500).json({ "error": "name field is required!!" });
+        }
+
+        const novoAluno = { nome, email, cpf, senha };
+        const retornoAluno = await alunoService.insereAluno(novoAluno);
+        if (retornoAluno === null) {
+            console.log('aqui');
+            console.log(retornoAluno);
+            response.status(500).json({ "error": "CPF Student exists. Student do not be inserted" });
+        }
+        return response.status(201).json({ retornoAluno });
     }
-    return response.status(201).json({ retornoAluno });
+    catch (error) {
+        console.log(error);
+        response.status(500).json({ "error": "Error API internal" });
+    }
 });
 
 routes.put('/:cpf', autenticacaoJWT.verificarToken, async (request, response) => {

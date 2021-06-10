@@ -1,6 +1,6 @@
 const request = require('supertest');
 const express = require('express');
-//const app = require('../index');
+const app = require('../index');
 
 //const routes = require('../routes/alunoRota');
 //const Authroutes = require('../routes/authRota');

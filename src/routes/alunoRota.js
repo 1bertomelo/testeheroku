@@ -1,6 +1,7 @@
 const { Router } = require('express');
+
 const alunoService = require('../service/AlunoService');
-const autenticacaoJWT = require('../service/authService');
+const autenticacaoJWT = require('../service/AuthService');
 const { validate } = require('../validations/validations');
 const { AlunoValidationRules } = require('../validations/AlunoValidations');
 
@@ -25,7 +26,7 @@ routes.post('/', AlunoValidationRules(), validate, async (request, response) => 
         console.log('oi');
         console.log(request.body);
         //destruturação 
-        
+
         if (nome === null || nome === "") {
             response.status(500).json({ "error": "name field is required!!" });
         }

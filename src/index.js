@@ -29,7 +29,5 @@ bd()
         module.exports = app.listen(process.env.PORT || 3333, () => {
             console.log("Server running");
         });
-
     })
     .catch(err => console.log(err));
-

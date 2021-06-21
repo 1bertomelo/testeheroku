@@ -30,9 +30,6 @@ bd()
             console.log("Server running");
         });
 
-
-
-
     })
     .catch(err => console.log(err));
 
